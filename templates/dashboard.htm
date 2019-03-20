@@ -1,0 +1,55 @@
+{% extends "stampo.htm" %}
+{% block title %}Dashboard - Cinema{% endblock %}
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-3">Cinema "Il Serpeggiante"</h1>
+    <p class="lead">Pannello amministrativo</p>
+    <hr class="my-4">
+    <p>Evento della settimana: maratona film dei Monty Python</p>
+</div>
+<a href="/nuovasala" type="button" class="btn btn-outline-info btn-lg btn-block">Aggiungi sala</a>
+<br>
+<div id="accordion" role="tablist" class="fg-primary">
+    {% for sala in sale %}
+    <div class="card card-d">
+        <div class="card-header card-header-d" role="tab" id="heading{{sala.nome}}">
+            <h5 class="mb-0">
+                <a class="collapsed" data-toggle="collapse" href="#collapse{{sala.nome}}" aria-expanded="false"
+                   aria-controls="collapse{{sala.nome}}" >
+                    Sala {{sala.nome}} Status:{{sala.posti_occ}}/{{sala.posti_tot}}
+                </a>
+            </h5>
+        </div>
+        <div id="collapse{{sala.nome}}" class="collapse" role="tabpanel" aria-labelledby="heading{{sala.nome}}"
+             data-parent="#accordion">
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        {% for numero in range(sala.numero_colonne) %}
+                        <th>{{numero+1}}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tr>
+                    {% for posto in sala.posti %}
+                        {% if posto.occupato %}
+                        <td><a href="/iscrizione/{{posto.colonna}}/{{posto.riga}}/{{sala.nome}}"><img height="25px" witdh="25px" alt="occupato" src="{{ url_for('static', filename='Occupato.png') }}"></a></td>
+                        {%else%}
+                        <td><a href="/iscrizione/{{posto.colonna}}/{{posto.riga}}/{{sala.nome}}"><img height="25px" witdh="25px" alt="occupato" src="{{ url_for('static', filename='Libero.png') }}"></a></td>
+                        {%endif%}
+                        {% if posto.colonna == sala.numero_colonne %}
+                            </tr>
+                            <tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tr>
+                </table>
+                <a href="/delsala/{{sala.nome}}"type="button" class="btn btn-danger">Elimina questa sala dall'elenco</a>
+            </div>
+        </div>
+    </div>
+    <br>
+    {% endfor %}
+</div>
+{% endblock %}
